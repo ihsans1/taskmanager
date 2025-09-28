@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 # -----------------------------
 SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-secret')
-DEBUG = False
+DEBUG = True
 
 # -----------------------------
 # ALLOWED HOSTS & CSRF
@@ -26,7 +26,7 @@ DEBUG = False
 railway_host = os.environ.get('RAILWAY_STATIC_URL')  # Railway may provide this
 
 if railway_host:
-    ALLOWED_HOSTS = [railway_host]  # ✅ Use Railway-provided host in production
+    ALLOWED_HOSTS = ['*']  # ✅ Use Railway-provided host in production
 else:
     # ✅ Include your deployed URL explicitly + local for dev
     ALLOWED_HOSTS = ['web-production-bb4c.up.railway.app', 'localhost', '127.0.0.1']
@@ -129,7 +129,7 @@ STATIC_URL = '/static/'  # ✅ Always start with /
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ Local dev static folder
-STATICFILES_DIRS = [BASE_DIR / "static"]  # ✅ optional if you have custom static files
+# STATICFILES_DIRS = [BASE_DIR / "static"]  # ✅ optional if you have custom static files
 
 # ✅ Whitenoise: compress + cache busting
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

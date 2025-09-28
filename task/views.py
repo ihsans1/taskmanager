@@ -20,7 +20,7 @@ from django.conf import settings
 class RegisterView(View):
     def get(self, request):
         form = UserRegistrationForm()
-        return render(request,"templates/registration/register.html", {"form": form})
+        return render(request,"registration/register.html", {"form": form})
     def post(self, request):
         form=UserRegistrationForm(request.POST)
         if form.is_valid():
