@@ -99,7 +99,7 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 # }
 DATABASES = {
     'default': dj_database_url.parse(
-        config("DATABASE_URL", default="postgresql://postgres:postgres@localhost:5432/taskmanager"),
+        config("DATABASE_URL", default="postgresql://postgres:ihsan@250@localhost:5432/taskmanager"),
         conn_max_age=600
     )
 }
@@ -114,10 +114,10 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
+AUTH_PASSWORD_VALIDATORS =[
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    }
+    },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
@@ -128,6 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 # Internationalization
