@@ -159,7 +159,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # ✅ Never hardcod
 # -----------------------------
 # CUSTOM USER MODEL
 # -----------------------------
-AUTH_USER_MODEL = 'task.CustomUser'  # ✅ If you use a custom user model
+# AUTH_USER_MODEL = 'task.CustomUser'  # ✅ If you use a custom user model
 
 # -----------------------------
 # DEFAULT PRIMARY KEY
