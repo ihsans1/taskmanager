@@ -19,11 +19,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-secret')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if render_host:
-    ALLOWED_HOSTS = [render_host]  # ✅ Render ke liye
+import os
+
+# Detect Railway host
+railway_host = os.environ.get('RAILWAY_STATIC_URL')  # optional env variable Railway may provide
+
+if railway_host:
+    ALLOWED_HOSTS = [railway_host]  # ✅ Railway deployment
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # ✅ Local ke liye
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # ✅ Local development
 
 
 # -----------------------------
