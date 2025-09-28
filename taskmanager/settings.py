@@ -27,8 +27,11 @@ railway_host = os.environ.get('RAILWAY_STATIC_URL')  # optional env variable Rai
 if railway_host:
     ALLOWED_HOSTS = [railway_host]  # ✅ Railway deployment
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # ✅ Local development
-
+   ALLOWED_HOSTS = ['web-production-bb4c.up.railway.app', 'localhost', '127.0.0.1']
+  # ✅ Local development
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-bb4c.up.railway.app',
+]
 
 # -----------------------------
 # APPLICATIONS
