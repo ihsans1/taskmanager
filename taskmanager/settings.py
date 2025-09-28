@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 # -----------------------------
 SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-secret')
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'  # ✅ keep False in production
+DEBUG = False
 
 # -----------------------------
 # ALLOWED HOSTS & CSRF
