@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url 
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f91ci^*m7-pndd^-(de&dkds(1&*218(3u%&ec0ve3ty^n^1pw'
+SECRET_KEY = os.environ.get('SECRET_KEY','unsafe-local-secret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG','True')== 'True'
 
-ALLOWED_HOSTS = ['192.168.100.118', 'localhost', '127.0.0.1']
+render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if render_host:
+    # Render hostname automatically allow ho jayega
+    ALLOWED_HOSTS = [render_host]
+else:
+    # Local development ke liye
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 
@@ -44,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # <-- immediately after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,6 +60,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+if not DEBUG:  # production
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # <-- add this line
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'taskmanager.urls'
 
@@ -75,15 +87,21 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'taskmanager',
+#         'USER': 'postgres',
+#         'PASSWORD': 'ihsan@250',
+#         'HOST': 'localhost',
+#         'PORT': 5432
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'taskmanager',
-        'USER': 'postgres',
-        'PASSWORD': 'ihsan@250',
-        'HOST': 'localhost',
-        'PORT': 5432
-    }
+    'default': dj_database_url.parse(
+        config("DATABASE_URL", default="postgresql://postgres:postgres@localhost:5432/taskmanager"),
+        conn_max_age=600
+    )
 }
 # DATABASES = {
 #     'default': {
@@ -99,7 +117,7 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
+    }
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
@@ -144,7 +162,9 @@ EMAIL_HOST= 'smtp.gmail.com'
 EMAIL_PORT= 587
 EMAIL_USE_TLS= True
 EMAIL_HOST_USER= 'ihsankhan101112@gmail.com'
-EMAIL_HOST_PASSWORD='sjio nvzi qlaw khmg'
+# EMAIL_HOST_PASSWORD='sjio nvzi qlaw khmg'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
 
 
 
