@@ -122,7 +122,7 @@ STATIC_URL = '/static/'  # ✅ always start with /
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ Local development ke liye static folder
-STATICFILES_DIRS = [BASE_DIR / "static"]
+# STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # ✅ Whitenoise storage (compress + cache busting)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
