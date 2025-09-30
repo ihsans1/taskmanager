@@ -17,17 +17,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -----------------------------
 # SECURITY
 # -----------------------------
-SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-secret')
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# -----------------------------
+# SECURITY
+# -----------------------------
+SECRET_KEY = config("SECRET_KEY", default="unsafe-local-secret")
+DEBUG = config("DEBUG", cast=bool, default=True)
 
-render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if render_host:  
-    ALLOWED_HOSTS = [render_host]  # ✅ Render ke liye
-else:
-    ALLOWED_HOSTS = ["127.0.0.1", "localhost", "192.168.100.118"]
-  # ✅ Local ke liye
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost").split(",")
 
- 
 
 # -----------------------------
 # APPLICATIONS
@@ -84,12 +81,16 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 # -----------------------------
 # DATABASE
 # -----------------------------
+# -----------------------------
+# DATABASE
+# -----------------------------
 DATABASES = {
     'default': dj_database_url.parse(
         config("DATABASE_URL", default="postgresql://postgres:ihsan@250@localhost:5432/taskmanager"),
         conn_max_age=600
     )
 }
+
 
 
 # -----------------------------
@@ -141,16 +142,21 @@ LOGOUT_REDIRECT_URL = "login"
 # -----------------------------
 # EMAIL CONFIGURATION
 # -----------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ihsankhan101112@gmail.com'
-EMAIL_HOST_PASSWORD = 'fgtmqqvxhnsjdeuo'
+# -----------------------------
+# EMAIL CONFIGURATION
+# -----------------------------
+EMAIL_BACKEND = config("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = config("EMAIL_PORT", cast=int, default=587)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=True)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # -----------------------------
 # DEFAULT PRIMARY KEY
 # -----------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  # ✅ fix: AUTO_FIELD → DEFAULT_AUTO_FIELD
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DDEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
+
