@@ -85,11 +85,12 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 # DATABASE
 # -----------------------------
 DATABASES = {
-    "default": dj_database_url.parse(
-        config("DATABASE_URL"),  # ✅ no bad fallback
+    'default': dj_database_url.parse(
+        config("DATABASE_URL", default="postgresql://postgres:ihsan@250@localhost:5432/taskmanager"),
         conn_max_age=600
     )
 }
+
 
 
 
@@ -122,7 +123,7 @@ STATIC_URL = '/static/'  # ✅ always start with /
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ Local development ke liye static folder
-# STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # ✅ Whitenoise storage (compress + cache busting)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
