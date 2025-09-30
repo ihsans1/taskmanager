@@ -13,6 +13,8 @@ class Task(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Pending")
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.FileField(upload_to="images/",max_length=250,null=True,default="images/image.png")
+
+
 class UserProfile(models.Model):  # Add this class
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     date_of_birth = models.DateField()
