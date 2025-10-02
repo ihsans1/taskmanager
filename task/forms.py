@@ -7,6 +7,10 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ["title", "description", "due_date", "status","image"]
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'})  # 👈 calendar picker
+        }
+
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)

@@ -23,7 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", default="unsafe-local-secret")
 DEBUG = config("DEBUG", cast=bool, default=True)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'dotty-polluted-ungraphically.ngrok-free.dev',
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://dotty-polluted-ungraphically.ngrok-free.dev',
+    'http://127.0.0.1:8000',
+]
+DOMAIN= "https://dotty-polluted-ungraphically.ngrok-free.dev"
 
 
 # -----------------------------
@@ -123,7 +132,7 @@ STATIC_URL = '/static/'  # ✅ always start with /
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ Local development ke liye static folder
-STATICFILES_DIRS = [BASE_DIR / "static"]
+
 
 # ✅ Whitenoise storage (compress + cache busting)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

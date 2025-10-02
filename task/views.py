@@ -61,6 +61,61 @@ from django.conf import settings
 #         return redirect('task_list')  # task list page pe redirect karo
 #     else:
 #         return HttpResponse("Activation link is invalid!")  # agar link ghalat ho
+# User = get_user_model()
+
+# class RegisterView(View):
+#     def get(self, request):
+#         form = UserRegistrationForm()
+#         return render(request, "registration/register.html", {"form": form})
+
+#     def post(self, request):
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.is_active = False
+#             user.save()
+
+#             token = default_token_generator.make_token(user)
+#             uid = urlsafe_base64_encode(force_bytes(user.pk))
+#            verification_link = settings.DOMAIN + reverse(
+#     'activate', kwargs={'uidb64': uid, 'token': token}
+# )
+
+
+
+#             # safe send - handle exceptions so user sees friendly message
+#             try:
+#                 send_mail(
+#                     'Verify your account',
+#                     f'Click to verify: {verification_link}',
+#                     settings.DEFAULT_FROM_EMAIL,
+#                     ['ihsankhan101112@gmail.com'],
+#                     fail_silently=False,
+#                 )
+#             except Exception as e:
+#                 # log the error in real app, for now show message
+#                 print("Email send error:", e)
+#                 return HttpResponse("User created but email could not be sent. Contact admin.")
+
+#             return HttpResponse("Check your email to activate your account.")
+#         return render(request, "registration/register.html", {"form": form})
+
+
+# def activate(request, uidb64, token):
+#     try:
+#         uid = urlsafe_base64_decode(uidb64).decode()
+#         user = User.objects.get(pk=uid)
+#     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+#         user = None
+
+#     if user is not None and default_token_generator.check_token(user, token):
+#         user.is_active = True
+#         user.save()
+#         # ensure login will not raise error
+#         user.backend = 'django.contrib.auth.backends.ModelBackend'
+#         login(request, user)
+#         return redirect('task_list')
+#     return HttpResponse("Activation link invalid or expired.")
 User = get_user_model()
 
 class RegisterView(View):
@@ -75,31 +130,40 @@ class RegisterView(View):
             user.is_active = False
             user.save()
 
+            # Generate token and UID
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            verification_link = "http://192.168.100.118:8000" + reverse(
-    'activate', kwargs={'uidb64': uid, 'token': token}
-)
 
+            # Generate domain dynamically (works with ngrok or local)
+            domain = f"https://{request.get_host()}"
+            verification_link = domain + reverse(
+                'activate', kwargs={'uidb64': uid, 'token': token}
+            )
 
-            # safe send - handle exceptions so user sees friendly message
+            # Send activation email
             try:
                 send_mail(
-                    'Verify your account',
-                    f'Click to verify: {verification_link}',
-                    settings.DEFAULT_FROM_EMAIL,
-                    ['ihsankhan101112@gmail.com'],
+                    subject='Verify your account',
+                    message=f'Hi {user.username},\n\nClick this link to activate your account:\n{verification_link}',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],  # send to the registered email
                     fail_silently=False,
                 )
             except Exception as e:
-                # log the error in real app, for now show message
+                # Log or display friendly message
                 print("Email send error:", e)
-                return HttpResponse("User created but email could not be sent. Contact admin.")
+                return HttpResponse(
+                    "User created but email could not be sent. Contact admin."
+                )
 
-            return HttpResponse("Check your email to activate your account.")
+            return HttpResponse(
+                "Registration successful! Check your email to activate your account."
+            )
+
         return render(request, "registration/register.html", {"form": form})
 
 
+# Activation view
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -110,10 +174,10 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        # ensure login will not raise error
+        # Ensure login works
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
-        return redirect('task_list')
+        return redirect('task_list')  # redirect to your app page
     return HttpResponse("Activation link invalid or expired.")
 
 
@@ -156,7 +220,7 @@ class TaskUpdateView(View):
 
     def post(self, request, pk):
         task = Task.objects.get(pk=pk, user=request.user)
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.POST,request.FILES, instance=task)
         if form.is_valid():
             form.save()
             return redirect("task_list")
